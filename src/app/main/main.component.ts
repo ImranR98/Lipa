@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SettingsService } from '../services/settings.service';
@@ -17,6 +17,11 @@ export class MainComponent implements OnInit, OnDestroy {
 
   settingsService: SettingsService = new SettingsService()
 
+  settingsForm: FormGroup = new FormGroup({
+    currencyDP: new FormControl(this.settingsService.getCurrencyDP()),
+    taxPercentage: new FormControl(this.settingsService.getTaxPercentage()),
+  })
+
   constructor(private formBuilder: FormBuilder, private snackBar: MatSnackBar) { }
 
   get items(): FormArray {
@@ -28,16 +33,19 @@ export class MainComponent implements OnInit, OnDestroy {
       items: this.formBuilder.array([])
     })
     this.subs.push(this.items.valueChanges.subscribe(value => this.handleItemChanges(value)))
+    this.subs.push(this.settingsForm.valueChanges.subscribe((value: { currencyDP: number, taxPercentage: number }) => {
+      this.settingsService.setCurrencyDP(value.currencyDP)
+      this.settingsService.setTaxPercentage(value.taxPercentage)
+    }))
     this.addItem()
-    console.log(this.settingsService.getCurrencyDP())
   }
 
   createItem(): FormGroup {
-    return this.formBuilder.group({
-      item: '',
-      cost: 0,
-      quantity: 1,
-      taxed: this.settingsService.getTaxPercentage() > 0
+    return new FormGroup({
+      item: new FormControl('', Validators.required),
+      cost: new FormControl(0, Validators.required),
+      quantity: new FormControl(1, Validators.required),
+      taxed: new FormControl({ value: this.settingsForm.controls['taxPercentage'].value > 0 }),
     })
   }
 

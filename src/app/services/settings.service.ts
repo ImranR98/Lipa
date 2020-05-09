@@ -11,11 +11,12 @@ export class SettingsService {
   constructor() { }
 
   getCurrencyDP(): number {
-    console.log("AAH")
     try {
       let storedCurrencyDPString = localStorage.getItem('currencyDP')
       if (storedCurrencyDPString == null) throw null
-      return Number.parseInt(storedCurrencyDPString)
+      let storedCurrencyDPS = Number.parseInt(storedCurrencyDPString)
+      if (storedCurrencyDPS < 0 || storedCurrencyDPS > 4) throw null
+      return storedCurrencyDPS
     } catch (err) {
       return this.defaultCurrencyDP
     }
@@ -23,7 +24,9 @@ export class SettingsService {
 
   setCurrencyDP(currencyDP: number): void {
     try {
-      localStorage.setItem('currencyDP', Number.parseInt(currencyDP.toString()).toString())
+      let givenCurrencyDP = Number.parseInt(currencyDP.toString())
+      if (givenCurrencyDP < 0 || givenCurrencyDP > 4) throw null
+      localStorage.setItem('currencyDP', givenCurrencyDP.toString())
     } catch (err) {
       localStorage.setItem('currencyDP', this.defaultCurrencyDP.toString())
     }
