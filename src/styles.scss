@@ -1,1 +1,64 @@
-/* You can add global styles to this file, and also import other style files */
+//Importing Angular Material
+@import '~@angular/material/theming';
+
+//Define custom font to use with Material, then include it
+@include mat-core();
+
+//Define custom color palettes for the App's primary, accent and warning colors (numbers indicate default, lighter and darker variants)
+$dark-mode-primary:  mat-palette($mat-pink);
+$dark-mode-accent: mat-palette($mat-blue-grey);
+$dark-mode-warn: mat-palette($mat-red);
+
+//Define a theme using the above palettes
+$dark-mode-theme: mat-dark-theme($dark-mode-primary, $dark-mode-accent, $dark-mode-warn);
+
+//Define another theme and import it in a class (not default)
+$light-mode-primary:  mat-palette($mat-pink);
+$light-mode-accent: mat-palette($mat-blue-grey);
+$light-mode-warn: mat-palette($mat-red);
+$light-mode-theme: mat-light-theme($light-mode-primary, $light-mode-accent, $light-mode-warn);
+
+@media (prefers-color-scheme: dark) {
+  @include angular-material-theme($dark-mode-theme);
+  html {
+    background-color: #000
+  }
+  .nav-list-active {
+    color: mat-color($dark-mode-primary, lighter) !important;
+    background-color: mat-color($dark-mode-primary, default, 0.1) !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  @include angular-material-theme($light-mode-theme);
+  html {
+    background-color: #FFF
+  }
+  .nav-list-active {
+    color: mat-color($light-mode-primary) !important;
+    background-color: mat-color($light-mode-primary, default, 0.1) !important;
+  }
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+mat-sidenav-container {
+  height: 100%;
+}
+
+.stdPadding {
+    padding: 1em;
+}
+
+.stdMarginTop {
+  margin-top: 1em;
+}
+
+mat-toolbar a {
+  text-decoration: none;
+}
+
+.nav-list-active {
+  font-weight: bold;
+}

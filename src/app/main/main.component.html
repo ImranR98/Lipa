@@ -1,0 +1,53 @@
+<mat-tab-group>
+    <mat-tab label="Items">
+        <form [formGroup]="itemsForm" fxLayout="column" fxLayoutGap="1em" class="stdMarginTop">
+            <div formArrayName="items" *ngFor="let item of itemsForm.get('items')['controls']; let i = index;">
+                <div [formGroupName]="i">
+                    <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="1em">
+                        <div fxLayout="row" fxLayoutGap="1em">
+                            <mat-form-field fxFlex="100%">
+                                <input matInput formControlName="item" placeholder="Item" type="text" required>
+                            </mat-form-field>
+                            <mat-form-field fxFlex="30%">
+                                <input matInput formControlName="cost" placeholder="Cost" type="number" min="0"
+                                    [step]="numberOfDecimalPlacesToHTMLStepValue(settingsService.getCurrencyDP())"
+                                    oninput="validity.valid||(value='');" required>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="1em" fxFlex="100%">
+                            <div fxLayout="row" fxLayoutGap="1em">
+                                <mat-form-field>
+                                    <input matInput formControlName="quantity" placeholder="Quantity" type="number"
+                                        min="1" step="1" oninput="validity.valid||(value='');" required>
+                                </mat-form-field>
+                                <div fxLayout="column" fxLayoutAlign="center center">
+                                    <mat-checkbox matInput formControlName="taxed" required
+                                        [disabled]="settingsService.getTaxPercentage() == 0">Taxed</mat-checkbox>
+                                </div>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                                <div></div>
+                                <button mat-icon-button color="warn" aria-label="delete" [disabled]="i == 0"
+                                    (click)="removeItem(i)">
+                                    <mat-icon>delete_outline</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <div></div>
+                <button mat-button color="primary" (click)="addItem()"
+                    [disabled]="!itemsForm.valid || ifDuplicateItems()">
+                    + Add Item
+                </button>
+            </div>
+        </form>
+    </mat-tab>
+    <mat-tab label="People">
+
+    </mat-tab>
+</mat-tab-group>
+{{settingsService.getCurrencyDP()}}
