@@ -39,7 +39,8 @@ export class MainComponent implements OnInit, OnDestroy {
     this.peopleForm = this.formBuilder.group({
       people: this.formBuilder.array([])
     })
-    this.subs.push(this.items.valueChanges.subscribe(value => this.handleItemChanges()))
+    this.subs.push(this.items.valueChanges.subscribe(() => this.handleChanges()))
+    this.subs.push(this.people.valueChanges.subscribe(() => this.handleChanges()))
     this.subs.push(this.settingsForm.valueChanges.subscribe((value: { currencyDP: number, taxPercentage: number }) => {
       this.settingsService.setCurrencyDP(value.currencyDP)
       this.settingsService.setTaxPercentage(value.taxPercentage)
@@ -53,7 +54,7 @@ export class MainComponent implements OnInit, OnDestroy {
       item: new FormControl('', Validators.required),
       cost: new FormControl(0, Validators.required),
       quantity: new FormControl(1, Validators.required),
-      taxed: new FormControl({ value: this.settingsForm.controls['taxPercentage'].value > 0 }),
+      taxed: new FormControl(this.settingsForm.controls['taxPercentage'].value > 0),
     })
   }
 
@@ -100,7 +101,7 @@ export class MainComponent implements OnInit, OnDestroy {
     } else return 0.01
   }
 
-  handleItemChanges(): void {
+  handleChanges(): void {
     // Go through each item from itemsForm
     // On every loop of above, loop through each person in peopleForm and go through their items FormArray
     // If the item exists in itemsForm but not that persons items array, add it to their array
@@ -111,7 +112,7 @@ export class MainComponent implements OnInit, OnDestroy {
           if (personItem.get('item').value == item.get('item').value) exists = true
         })
         if (!exists) (person.get('items') as FormArray).push(new FormGroup({
-          item: new FormControl({ value: item.get('item').value, disabled: true }, Validators.required),
+          item: new FormControl(item.get('item').value, Validators.required),
           chippingIn: new FormControl(false)
         }))
       })
@@ -132,8 +133,10 @@ export class MainComponent implements OnInit, OnDestroy {
   calculate() {
     if (!this.itemsForm.valid || this.ifDuplicateItems() || !this.peopleForm.valid || this.ifDuplicatePeople() || !this.settingsForm.valid) this.snackBar.open('Invalid input!', 'Dismiss', { duration: 5000 })
     else {
-      console.log(this.itemsForm.value)
-      console.log(this.peopleForm.value)
+      let items: { item: string, cost: number, quantity: number, taxed: boolean }[] = this.itemsForm.value
+      let people: { name: string, items: { item: string, chippingIn: boolean }[] }[] = this.peopleForm.value
+      let settings: { currencyDP: number, taxPercentage: number } = this.settingsForm.value
+      // TODO: Use the 3 objects above to run the calculations and return a JSON object that can be shown in a table
     }
   }
 
