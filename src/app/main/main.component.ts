@@ -14,6 +14,7 @@ export class MainComponent implements OnInit, OnDestroy {
   subs: Subscription[] = []
 
   itemsForm: FormGroup
+  peopleForm: FormGroup
 
   settingsService: SettingsService = new SettingsService()
 
@@ -27,17 +28,24 @@ export class MainComponent implements OnInit, OnDestroy {
   get items(): FormArray {
     return this.itemsForm.get('items') as FormArray
   }
+  get people(): FormArray {
+    return this.peopleForm.get('people') as FormArray
+  }
 
   ngOnInit(): void {
     this.itemsForm = this.formBuilder.group({
       items: this.formBuilder.array([])
     })
-    this.subs.push(this.items.valueChanges.subscribe(value => this.handleItemChanges(value)))
+    this.peopleForm = this.formBuilder.group({
+      people: this.formBuilder.array([])
+    })
+    this.subs.push(this.items.valueChanges.subscribe(value => this.handleItemChanges()))
     this.subs.push(this.settingsForm.valueChanges.subscribe((value: { currencyDP: number, taxPercentage: number }) => {
       this.settingsService.setCurrencyDP(value.currencyDP)
       this.settingsService.setTaxPercentage(value.taxPercentage)
     }))
     this.addItem()
+    this.addPerson()
   }
 
   createItem(): FormGroup {
@@ -49,13 +57,37 @@ export class MainComponent implements OnInit, OnDestroy {
     })
   }
 
+  createPerson(): FormGroup {
+    return new FormGroup({
+      name: new FormControl('', Validators.required),
+      items: this.formBuilder.array([])
+    })
+  }
+
+  ifDuplicateItems(): boolean {
+    return Array.from(new Set(this.items.value.map(item => item.item))).length < this.items.value.length
+  }
+
+  ifDuplicatePeople(): boolean {
+    return Array.from(new Set(this.people.value.map(person => person.name))).length < this.people.value.length
+  }
+
   addItem(): void {
     if (!this.itemsForm.valid || this.ifDuplicateItems()) this.snackBar.open('Invalid input!', 'Dismiss', { duration: 5000 })
     else this.items.push(this.createItem())
   }
 
+  addPerson(): void {
+    if (!this.peopleForm.valid || this.ifDuplicatePeople()) this.snackBar.open('Invalid input!', 'Dismiss', { duration: 5000 })
+    else this.people.push(this.createPerson())
+  }
+
   removeItem(index: number): void {
     this.items.removeAt(index)
+  }
+
+  removePerson(index: number): void {
+    this.people.removeAt(index)
   }
 
   numberOfDecimalPlacesToHTMLStepValue(dp: number): number {
@@ -68,12 +100,41 @@ export class MainComponent implements OnInit, OnDestroy {
     } else return 0.01
   }
 
-  handleItemChanges(items: any): void {
-
+  handleItemChanges(): void {
+    // Go through each item from itemsForm
+    // On every loop of above, loop through each person in peopleForm and go through their items FormArray
+    // If the item exists in itemsForm but not that persons items array, add it to their array
+    this.items.controls.filter(item => item.valid).forEach(item => {
+      this.people.controls.forEach((person: FormGroup) => {
+        let exists = false;
+        (person.get('items') as FormArray).controls.forEach(personItem => {
+          if (personItem.get('item').value == item.get('item').value) exists = true
+        })
+        if (!exists) (person.get('items') as FormArray).push(new FormGroup({
+          item: new FormControl({ value: item.get('item').value, disabled: true }, Validators.required),
+          chippingIn: new FormControl(false)
+        }))
+      })
+    })
+    // Similar to above, but for removal
+    // Loops through peopleForm, then itemsForm in the inner loop
+    this.people.controls.forEach(person => {
+      (person.get('items') as FormArray).controls.forEach((personItem, index: number) => {
+        let exists = false
+        this.items.controls.filter(item => item.valid).forEach(item => {
+          if (personItem.get('item').value == item.get('item').value) exists = true
+        })
+        if (!exists) (person.get('items') as FormArray).removeAt(index)
+      })
+    })
   }
 
-  ifDuplicateItems(): boolean {
-    return Array.from(new Set(this.items.value.map(item => item.item))).length < this.items.value.length
+  calculate() {
+    if (!this.itemsForm.valid || this.ifDuplicateItems() || !this.peopleForm.valid || this.ifDuplicatePeople() || !this.settingsForm.valid) this.snackBar.open('Invalid input!', 'Dismiss', { duration: 5000 })
+    else {
+      console.log(this.itemsForm.value)
+      console.log(this.peopleForm.value)
+    }
   }
 
   ngOnDestroy(): void {

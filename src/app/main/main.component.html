@@ -1,7 +1,7 @@
-<div fxLayout="column" fxLayoutGap="1em">
+<div fxLayout="column">
     <mat-tab-group>
         <mat-tab label="Items">
-            <form [formGroup]="itemsForm" fxLayout="column" fxLayoutGap="1em" class="stdMarginTop">
+            <form [formGroup]="itemsForm" fxLayout="column" fxLayoutGap="1em" class="stdMarginTop" class="stdPadding">
                 <div formArrayName="items" *ngFor="let item of itemsForm.get('items')['controls']; let i = index;">
                     <div [formGroupName]="i">
                         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="1em">
@@ -46,12 +46,47 @@
                 </div>
             </form>
         </mat-tab>
-        <mat-tab label="People">
 
+        <mat-tab label="People">
+            <form [formGroup]="peopleForm" fxLayout="column" fxLayoutGap="1em" class="stdMarginTop" class="stdPadding">
+                <div formArrayName="people" *ngFor="let person of peopleForm.get('people')['controls']; let i = index;">
+                    <div [formGroupName]="i" fxLayout="column" fxLayoutGap="1em">
+                        <div fxLayout="column">
+                            <div fxLayout="row">
+                                <mat-form-field>
+                                    <input matInput formControlName="name" placeholder="Name" type="text" required>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row wrap" fxLayoutGap="1em">
+                                <div formArrayName="items"
+                                    *ngFor="let personItem of person.get('items')['controls']; let i = index;">
+                                    <div [formGroupName]="i">
+                                        <mat-checkbox matInput formControlName="chippingIn">
+                                            {{personItem.get('item').value}}
+                                        </mat-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <mat-divider></mat-divider>
+                    </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-between">
+                    <div></div>
+                    <button mat-button color="primary" (click)="addPerson()"
+                        [disabled]="!peopleForm.valid || ifDuplicatePeople()">
+                        + Add Person
+                    </button>
+                </div>
+            </form>
         </mat-tab>
     </mat-tab-group>
-    <mat-divider></mat-divider>
-    <form [formGroup]="settingsForm" fxLayout="row" fxLayoutGap="1em">
+
+    <div class="stdMarginLeft stdMarginRight">
+        <mat-divider></mat-divider>
+    </div>
+
+    <form [formGroup]="settingsForm" fxLayout="row" fxLayoutGap="1em" class="stdPadding">
         <mat-form-field fxFlex="30%">
             <input matInput formControlName="taxPercentage" placeholder="Tax %" type="number" min="0" step="1" max="100"
                 oninput="validity.valid||(value='');">
@@ -63,7 +98,7 @@
     </form>
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-raised-button color="primary"
-            [disabled]="!itemsForm.valid || ifDuplicateItems() || !settingsForm.valid">
+            [disabled]="!itemsForm.valid || ifDuplicateItems() || !peopleForm.valid || ifDuplicatePeople() || !settingsForm.valid">
             Calculate
         </button>
     </div>
