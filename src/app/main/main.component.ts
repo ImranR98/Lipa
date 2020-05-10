@@ -3,6 +3,8 @@ import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@ang
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SettingsService } from '../services/settings.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ResultsDialogComponent } from './results-dialog/results-dialog.component';
 
 @Component({
   selector: 'app-main',
@@ -15,6 +17,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   itemsForm: FormGroup
   peopleForm: FormGroup
+  allPeopleHaveAnItem: boolean = false
 
   settingsService: SettingsService = new SettingsService()
 
@@ -23,7 +26,7 @@ export class MainComponent implements OnInit, OnDestroy {
     taxPercentage: new FormControl(this.settingsService.getTaxPercentage()),
   })
 
-  constructor(private formBuilder: FormBuilder, private snackBar: MatSnackBar) { }
+  constructor(private formBuilder: FormBuilder, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   get items(): FormArray {
     return this.itemsForm.get('items') as FormArray
@@ -52,7 +55,7 @@ export class MainComponent implements OnInit, OnDestroy {
   createItem(): FormGroup {
     return new FormGroup({
       item: new FormControl('', Validators.required),
-      cost: new FormControl(0, Validators.required),
+      cost: new FormControl(null, Validators.required),
       quantity: new FormControl(1, Validators.required),
       taxed: new FormControl(this.settingsForm.controls['taxPercentage'].value > 0),
     })
@@ -128,10 +131,20 @@ export class MainComponent implements OnInit, OnDestroy {
         if (!exists) (person.get('items') as FormArray).removeAt(index)
       })
     })
+
+    let tempAllPeopleHaveAnItem = true
+    this.people.controls.forEach(person => {
+      let atLeastOneItem = false;
+      (person.get('items') as FormArray).controls.forEach(personItem => {
+        if (personItem.get('chippingIn').value) atLeastOneItem = true
+      })
+      if (!atLeastOneItem) tempAllPeopleHaveAnItem = false
+    })
+    this.allPeopleHaveAnItem = tempAllPeopleHaveAnItem
   }
 
   calculate() {
-    if (!this.itemsForm.valid || this.ifDuplicateItems() || !this.peopleForm.valid || this.ifDuplicatePeople() || !this.settingsForm.valid) this.snackBar.open('Invalid input!', 'Dismiss', { duration: 5000 })
+    if (!this.itemsForm.valid || this.ifDuplicateItems() || !this.peopleForm.valid || this.ifDuplicatePeople() || !this.allPeopleHaveAnItem || !this.settingsForm.valid) this.snackBar.open('Invalid input!', 'Dismiss', { duration: 5000 })
     else {
       let items: { item: string, cost: number, quantity: number, taxed: boolean, dividedBy?: number, costPerPerson?: number }[] = this.itemsForm.get('items').value
       let people: { name: string, items: { item: string, chippingIn: boolean, cost?: number }[], totalCost?: number }[] = this.peopleForm.get('people').value
@@ -145,22 +158,35 @@ export class MainComponent implements OnInit, OnDestroy {
         item.costPerPerson = ((item.taxed ? item.cost + (item.cost * settings.taxPercentage / 100) : item.cost) * item.quantity) / item.dividedBy
         return item
       })
-      people = people.map(person => {
-        person.totalCost = 0
-        person.items = person.items.map(personItem => {
-          items.forEach(item => {
-            if (item.item == personItem.item && personItem.chippingIn) {
-              personItem.cost = item.costPerPerson
-              person.totalCost += item.costPerPerson
-            }
-          })
-          return personItem
-        })
-        total += person.totalCost
-        return person
+      let allItemsUsed = true
+      items.forEach(item => {
+        if (item.dividedBy == 0) allItemsUsed = false
       })
-      let finalResult = { items: items, people: people, settings: settings, total: total }
-      console.log(JSON.stringify(finalResult, null, '\t'))
+      if (allItemsUsed) {
+        people = people.map(person => {
+          person.totalCost = 0
+          person.items = person.items.map(personItem => {
+            items.forEach(item => {
+              if (item.item == personItem.item && personItem.chippingIn) {
+                personItem.cost = item.costPerPerson
+                person.totalCost += item.costPerPerson
+              }
+            })
+            return personItem
+          })
+          total += person.totalCost
+          return person
+        })
+        let finalResult = { items: items, people: people, settings: settings, total: total }
+        this.dialog.open(ResultsDialogComponent, {
+          data: finalResult,
+          maxWidth: '100vw',
+          width: '100%',
+          height: '100vh'
+        })
+      } else {
+        this.snackBar.open('One or more items were not taken by anyone!', 'Dismiss', { duration: 5000 })
+      }
     }
   }
 

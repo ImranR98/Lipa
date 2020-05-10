@@ -1,0 +1,79 @@
+<div fxLayout="column" fxLayoutAlign="space-between" class="height100">
+    <mat-tab-group>
+        <mat-tab label="Amounts" fxLayout="column" fxLayoutGap="1em">
+            <table mat-table [dataSource]="results.people" class="width100" style="height: 200px;">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    <td mat-footer-cell *matFooterCellDef> Total </td>
+                </ng-container>
+                <ng-container matColumnDef="items">
+                    <th mat-header-cell *matHeaderCellDef>&nbsp;Items</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div fxLayout="column">
+                            <span *ngFor="let item of element.items; let i = index;">
+                                <span
+                                    *ngIf="item.chippingIn">{{item.item + ' @' + roundOffByDPSetting(item.cost)}}</span>
+                            </span>
+                        </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                </ng-container>
+                <ng-container matColumnDef="totalCost">
+                    <th mat-header-cell *matHeaderCellDef>Amount</th>
+                    <td mat-cell *matCellDef="let element"> {{roundOffByDPSetting(element.totalCost)}} </td>
+                    <td mat-footer-cell *matFooterCellDef> {{roundOffByDPSetting(results.total)}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="amountColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: amountColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="amountColumns; sticky: true"></tr>
+            </table>
+            <small>* There may be a slight difference between the calculated and actual totals due to rounding
+                errors.</small>
+        </mat-tab>
+        <mat-tab label="Breakdown">
+            <table mat-table [dataSource]="results.items" class="width100">
+                <ng-container matColumnDef="item">
+                    <th mat-header-cell *matHeaderCellDef>Item</th>
+                    <td mat-cell *matCellDef="let element"> {{element.item}} </td>
+                </ng-container>
+                <ng-container matColumnDef="cost">
+                    <th mat-header-cell *matHeaderCellDef>Cost</th>
+                    <td mat-cell *matCellDef="let element"> {{roundOffByDPSetting(element.cost)}} </td>
+                </ng-container>
+                <ng-container matColumnDef="quantity">
+                    <th mat-header-cell *matHeaderCellDef>Qty.</th>
+                    <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+                </ng-container>
+                <ng-container matColumnDef="taxed">
+                    <th mat-header-cell *matHeaderCellDef>Tax</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.taxed ? results.settings.taxPercentage + '% ': 'N/A'}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="dividedBy">
+                    <th mat-header-cell *matHeaderCellDef>People</th>
+                    <td mat-cell *matCellDef="let element"> {{element.dividedBy}} </td>
+                </ng-container>
+                <ng-container matColumnDef="costPerPerson">
+                    <th mat-header-cell *matHeaderCellDef>Cost/Person</th>
+                    <td mat-cell *matCellDef="let element"> {{roundOffByDPSetting(element.costPerPerson)}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="breakdownColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: breakdownColumns;"></tr>
+            </table>
+        </mat-tab>
+    </mat-tab-group>
+    <div>
+        Share this page:
+        <div fxLayout="row" fxLayoutGap="1em">
+            <div class="linkBox" fxLayout="row" fxLayoutAlign="start center">
+                <a
+                    [href]="url + '/results&data=' + base64EncodeResults()">{{url}}/results&data={{base64EncodeResults()}}</a>
+            </div>
+            <button mat-raised-button color="accent" [cdkCopyToClipboard]="url + '/results&data=' + base64EncodeResults()" (click)="showCopySnackbar()">Copy</button>
+        </div>
+    </div>
+</div>

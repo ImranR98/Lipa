@@ -74,3 +74,22 @@ mat-toolbar a {
 .nav-list-active {
   font-weight: bold;
 }
+
+.width100 {
+  width: 100%;
+}
+
+.height100 {
+  height: 100%;
+}
+
+.linkBox {
+  overflow: auto;
+  white-space: nowrap;
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.linkBox a {
+  color: inherit;
+}

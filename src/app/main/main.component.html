@@ -78,7 +78,7 @@
                 <div fxLayout="row" fxLayoutAlign="space-between">
                     <div></div>
                     <button mat-button color="primary" (click)="addPerson()"
-                        [disabled]="!peopleForm.valid || ifDuplicatePeople()">
+                        [disabled]="!peopleForm.valid || ifDuplicatePeople() || !allPeopleHaveAnItem">
                         + Add Person
                     </button>
                 </div>
@@ -102,7 +102,7 @@
     </form>
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-raised-button color="primary"
-            [disabled]="!itemsForm.valid || ifDuplicateItems() || !peopleForm.valid || ifDuplicatePeople() || !settingsForm.valid"
+            [disabled]="!itemsForm.valid || ifDuplicateItems() || !peopleForm.valid || ifDuplicatePeople() || !allPeopleHaveAnItem || !settingsForm.valid"
             (click)="calculate()">
             Calculate
         </button>

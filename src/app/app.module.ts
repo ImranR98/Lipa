@@ -20,8 +20,13 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatDividerModule } from '@angular/material/divider'
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { SettingsComponent } from './settings/settings.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar'
+import { SettingsComponent } from './settings/settings.component'
+import { ResultsComponent } from './results/results.component'
+import { ResultsDialogComponent } from './main/results-dialog/results-dialog.component'
+import { MatDialogModule } from '@angular/material/dialog'
+import { MatTableModule } from '@angular/material/table'
+import { ClipboardModule } from '@angular/cdk/clipboard'
 
 @NgModule({
   declarations: [
@@ -30,7 +35,9 @@ import { SettingsComponent } from './settings/settings.component';
     HelpComponent,
     AboutComponent,
     Error404Component,
-    SettingsComponent
+    SettingsComponent,
+    ResultsComponent,
+    ResultsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +55,10 @@ import { SettingsComponent } from './settings/settings.component';
     MatInputModule,
     MatCheckboxModule,
     MatDividerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule,
+    MatTableModule,
+    ClipboardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
