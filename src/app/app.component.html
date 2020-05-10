@@ -7,14 +7,14 @@
       <a mat-list-item routerLink="/about" routerLinkActive="nav-list-active" (click)="sidenav.close()"> About </a>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content fxLayout="column">
     <mat-toolbar fxLayout="row" fxLayoutGap="1em" color="primary">
       <button mat-icon-button (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
       <span>Lipa</span>
     </mat-toolbar>
-    <div>
+    <div fxFlex="100%">
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>

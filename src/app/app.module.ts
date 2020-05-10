@@ -26,7 +26,8 @@ import { ResultsComponent } from './results/results.component'
 import { ResultsDialogComponent } from './main/results-dialog/results-dialog.component'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatTableModule } from '@angular/material/table'
-import { ClipboardModule } from '@angular/cdk/clipboard'
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { ResultsContainerComponent } from './results-container/results-container.component'
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ClipboardModule } from '@angular/cdk/clipboard'
     Error404Component,
     SettingsComponent,
     ResultsComponent,
-    ResultsDialogComponent
+    ResultsDialogComponent,
+    ResultsContainerComponent
   ],
   imports: [
     BrowserModule,

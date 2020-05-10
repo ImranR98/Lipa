@@ -4,6 +4,7 @@ import { MainComponent } from './main/main.component';
 import { HelpComponent } from './help/help.component';
 import { AboutComponent } from './about/about.component';
 import { Error404Component } from './error404/error404.component';
+import { ResultsContainerComponent } from './results-container/results-container.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'main',
     component: MainComponent
+  },
+  {
+    path: 'results',
+    component: ResultsContainerComponent
   },
   {
     path: 'help',

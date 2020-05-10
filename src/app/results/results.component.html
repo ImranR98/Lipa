@@ -1,7 +1,7 @@
 <div fxLayout="column" fxLayoutAlign="space-between" class="height100">
     <mat-tab-group>
         <mat-tab label="Amounts" fxLayout="column" fxLayoutGap="1em">
-            <table mat-table [dataSource]="results.people" class="width100" style="height: 200px;">
+            <table mat-table [dataSource]="results.people" class="width100">
                 <ng-container matColumnDef="name">
                     <th mat-header-cell *matHeaderCellDef>Name</th>
                     <td mat-cell *matCellDef="let element"> {{element.name}} </td>
@@ -29,7 +29,8 @@
                 <tr mat-row *matRowDef="let row; columns: amountColumns;"></tr>
                 <tr mat-footer-row *matFooterRowDef="amountColumns; sticky: true"></tr>
             </table>
-            <small>* There may be a slight difference between the calculated and actual totals due to rounding
+            <small class="stdMargin">* There may be a slight difference between the calculated and actual totals due to
+                rounding
                 errors.</small>
         </mat-tab>
         <mat-tab label="Breakdown">
@@ -66,14 +67,16 @@
             </table>
         </mat-tab>
     </mat-tab-group>
-    <div>
-        Share this page:
+    <div class="stdMargin">
+        Share this result:
         <div fxLayout="row" fxLayoutGap="1em">
             <div class="linkBox" fxLayout="row" fxLayoutAlign="start center">
-                <a
-                    [href]="url + '/results&data=' + base64EncodeResults()">{{url}}/results&data={{base64EncodeResults()}}</a>
+                <a [href]="url + '/results?data=' + base64EncodeResults()"
+                    target="_blank">{{url}}/results?data={{base64EncodeResults()}}</a>
             </div>
-            <button mat-raised-button color="accent" [cdkCopyToClipboard]="url + '/results&data=' + base64EncodeResults()" (click)="showCopySnackbar()">Copy</button>
+            <button mat-raised-button color="accent"
+                [cdkCopyToClipboard]="url + '/results?data=' + base64EncodeResults()"
+                (click)="showCopySnackbar()">Copy</button>
         </div>
     </div>
 </div>
