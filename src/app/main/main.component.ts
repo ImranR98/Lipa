@@ -133,10 +133,34 @@ export class MainComponent implements OnInit, OnDestroy {
   calculate() {
     if (!this.itemsForm.valid || this.ifDuplicateItems() || !this.peopleForm.valid || this.ifDuplicatePeople() || !this.settingsForm.valid) this.snackBar.open('Invalid input!', 'Dismiss', { duration: 5000 })
     else {
-      let items: { item: string, cost: number, quantity: number, taxed: boolean }[] = this.itemsForm.value
-      let people: { name: string, items: { item: string, chippingIn: boolean }[] }[] = this.peopleForm.value
+      let items: { item: string, cost: number, quantity: number, taxed: boolean, dividedBy?: number, costPerPerson?: number }[] = this.itemsForm.get('items').value
+      let people: { name: string, items: { item: string, chippingIn: boolean, cost?: number }[], totalCost?: number }[] = this.peopleForm.get('people').value
       let settings: { currencyDP: number, taxPercentage: number } = this.settingsForm.value
-      // TODO: Use the 3 objects above to run the calculations and return a JSON object that can be shown in a table
+      let total = 0
+      items = items.map(item => {
+        item.dividedBy = 0
+        people.forEach(person => person.items.forEach(personItem => {
+          if (item.item == personItem.item && personItem.chippingIn) item.dividedBy++
+        }))
+        item.costPerPerson = ((item.taxed ? item.cost + (item.cost * settings.taxPercentage / 100) : item.cost) * item.quantity) / item.dividedBy
+        return item
+      })
+      people = people.map(person => {
+        person.totalCost = 0
+        person.items = person.items.map(personItem => {
+          items.forEach(item => {
+            if (item.item == personItem.item && personItem.chippingIn) {
+              personItem.cost = item.costPerPerson
+              person.totalCost += item.costPerPerson
+            }
+          })
+          return personItem
+        })
+        total += person.totalCost
+        return person
+      })
+      let finalResult = { items: items, people: people, settings: settings, total: total }
+      console.log(JSON.stringify(finalResult, null, '\t'))
     }
   }
 
