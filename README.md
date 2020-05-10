@@ -1,27 +1,23 @@
 # Lipa
+Lipa calculates the amount each person owes when splitting a reciept.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.2.
+## Deployment
+Run `npm i` the first time to install dependencies.
 
-## Development server
+Run `npm start` to serve the built application.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Alternatively, run `ng serve` to run the app directly in development mode.
 
-## Code scaffolding
+## Usage
+The Main page consists of 2 tabs - 'Items' and 'People'. The first tab asks for the list of items on the reciept, and the second tab asks for the list of people, and the item distribution.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+### Items tab
+- Fill in the Item name, cost, quantity, and taxable status of the first item on your reciept.
+- Click '+ Add Item' to add the second item, and repeat as above, until all items are listed.
+- The trashcan icon is used to delete the item.
+    
+### People tab
+- Fill in the first person's name.
+- Check the boxes for each item the person was involved in buying.
+- Click '+ Add Person' to add the second person, and repeat as above, until all people are listed.
+- The trashcan icon is used to delete the person.
