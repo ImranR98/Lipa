@@ -5,7 +5,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SettingsService } from '../services/settings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ResultsDialogComponent } from './results-dialog/results-dialog.component';
-import { UnsavedChangesService } from '../services/unsaved-changes.service';
 
 @Component({
   selector: 'app-main',
@@ -27,7 +26,7 @@ export class MainComponent implements OnInit, OnDestroy {
     taxPercentage: new FormControl(this.settingsService.getTaxPercentage()),
   })
 
-  constructor(private formBuilder: FormBuilder, private snackBar: MatSnackBar, private dialog: MatDialog, private unsavedChangesService: UnsavedChangesService) { }
+  constructor(private formBuilder: FormBuilder, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   get items(): FormArray {
     return this.itemsForm.get('items') as FormArray
@@ -37,7 +36,6 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.unsavedChangesService.unsavedChanges = false
     this.itemsForm = this.formBuilder.group({
       items: this.formBuilder.array([])
     })
@@ -143,8 +141,6 @@ export class MainComponent implements OnInit, OnDestroy {
       if (!atLeastOneItem) tempAllPeopleHaveAnItem = false
     })
     this.allPeopleHaveAnItem = tempAllPeopleHaveAnItem
-    // Set the flag in the unsaved changes service, so the user can be prompted before leaving the page
-    this.unsavedChangesService.unsavedChanges = true
   }
 
   calculate() {
@@ -188,7 +184,6 @@ export class MainComponent implements OnInit, OnDestroy {
           width: '100%',
           height: '100vh'
         })
-        this.unsavedChangesService.unsavedChanges = false
       } else {
         this.snackBar.open('One or more items were not taken by anyone!', 'Dismiss', { duration: 5000 })
       }

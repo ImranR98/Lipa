@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { UnsavedChangesService } from './services/unsaved-changes.service';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +7,4 @@ import { UnsavedChangesService } from './services/unsaved-changes.service';
 })
 export class AppComponent {
   title = 'lipa';
-  unsavedChangesService: UnsavedChangesService = new UnsavedChangesService()
 }
