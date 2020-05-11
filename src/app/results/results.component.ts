@@ -15,18 +15,22 @@ export class ResultsComponent implements OnInit {
 
   @Input() results: {
     items: { item: string, cost: number, quantity: number, taxed: boolean, dividedBy: number, costPerPerson: number }[],
-    people: { name: string, items: { item: string, chippingIn: boolean, cost?: number }[], totalCost?: number }[],
+    people: { name: string, items: { item: string, chippingIn: boolean, cost: number }[], totalCost: number }[],
     settings: { currencyDP: number, taxPercentage: number },
     total: number
   }
 
   @Input() isDialog: boolean = false
 
+  roundingError: number = 0
+  actualTotal: number = 0
+
   amountColumns: string[] = ['name', 'items', 'totalCost']
   breakdownColumns: string[] = ['item', 'cost', 'quantity', 'taxed', 'dividedBy', 'costPerPerson']
 
   ngOnInit(): void {
-    console.log(this.results)
+    this.results.people.forEach(person => this.actualTotal += this.roundOffByDPSetting(person.totalCost))
+    this.actualTotal = this.roundOffByDPSetting(this.actualTotal)
   }
 
   roundOffByDPSetting(num: number): number {

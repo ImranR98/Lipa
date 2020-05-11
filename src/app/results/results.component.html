@@ -1,37 +1,53 @@
 <div fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="1em" class="height100">
     <mat-tab-group>
-        <mat-tab label="Amounts" fxLayout="column" fxLayoutGap="1em">
-            <table mat-table [dataSource]="results.people" class="width100">
-                <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>Name</th>
-                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-                    <td mat-footer-cell *matFooterCellDef> Total </td>
-                </ng-container>
-                <ng-container matColumnDef="items">
-                    <th mat-header-cell *matHeaderCellDef>&nbsp;Items</th>
-                    <td mat-cell *matCellDef="let element">
-                        <div fxLayout="column">
-                            <span *ngFor="let item of element.items; let i = index;">
-                                <span
-                                    *ngIf="item.chippingIn">{{item.item + ' @' + roundOffByDPSetting(item.cost)}}</span>
-                            </span>
-                        </div>
-                    </td>
-                    <td mat-footer-cell *matFooterCellDef></td>
-                </ng-container>
-                <ng-container matColumnDef="totalCost">
-                    <th mat-header-cell *matHeaderCellDef>Amount</th>
-                    <td mat-cell *matCellDef="let element"> {{roundOffByDPSetting(element.totalCost)}} </td>
-                    <td mat-footer-cell *matFooterCellDef> {{roundOffByDPSetting(results.total)}} </td>
-                </ng-container>
+        <mat-tab label="Amounts">
+            <div fxLayout="column" fxLayoutGap="1em">
+                <table mat-table [dataSource]="results.people" class="width100">
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef>Name</th>
+                        <td mat-cell *matCellDef="let element">{{element.name}} </td>
+                        <td mat-footer-cell *matFooterCellDef>Total<strong
+                                *ngIf="actualTotal != roundOffByDPSetting(results.total)"> *</strong></td>
+                    </ng-container>
+                    <ng-container matColumnDef="items">
+                        <th mat-header-cell *matHeaderCellDef>&nbsp;Items</th>
+                        <td mat-cell *matCellDef="let element">
+                            <div fxLayout="column">
+                                <span *ngFor="let item of element.items; let i = index;">
+                                    <span
+                                        *ngIf="item.chippingIn">{{item.item + ' @' + roundOffByDPSetting(item.cost)}}</span>
+                                </span>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <ng-container matColumnDef="totalCost">
+                        <th mat-header-cell *matHeaderCellDef>Amount</th>
+                        <td mat-cell *matCellDef="let element">{{roundOffByDPSetting(element.totalCost)}} </td>
+                        <td mat-footer-cell *matFooterCellDef>{{actualTotal}} </td>
+                    </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="amountColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: amountColumns;"></tr>
-                <tr mat-footer-row *matFooterRowDef="amountColumns; sticky: true"></tr>
-            </table>
-            <small class="stdMargin">* There may be a slight difference between the calculated and actual totals due to
-                rounding
-                errors.</small>
+                    <tr mat-header-row *matHeaderRowDef="amountColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: amountColumns;"></tr>
+                    <tr mat-footer-row *matFooterRowDef="amountColumns; sticky: true"></tr>
+                </table>
+                <div [class.stdMarginLeft]="!isDialog" [class.stdMarginRight]="!isDialog">
+                    <p *ngIf="actualTotal < roundOffByDPSetting(results.total)">
+                        <strong>*</strong> The actual total is <strong>{{roundOffByDPSetting(results.total)}}</strong>,
+                        so
+                        <strong>{{roundOffByDPSetting(roundOffByDPSetting(results.total) - actualTotal)}}</strong>
+                        remains due to rounding errors and cannot be divided further. It should be added to someone's
+                        cost.
+                    </p>
+                    <p *ngIf="actualTotal > roundOffByDPSetting(results.total)">
+                        <strong>*</strong> The actual total is <strong>{{roundOffByDPSetting(results.total)}}</strong>,
+                        so
+                        <strong>{{roundOffByDPSetting(actualTotal - roundOffByDPSetting(results.total))}}</strong>
+                        is extra due to rounding errors and cannot be divided further. It should be discounted from
+                        someone's cost.
+                    </p>
+                </div>
+            </div>
         </mat-tab>
         <mat-tab label="Breakdown">
             <table mat-table [dataSource]="results.items" class="width100">
