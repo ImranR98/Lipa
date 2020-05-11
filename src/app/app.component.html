@@ -2,9 +2,12 @@
   <mat-sidenav #sidenav>
     <mat-nav-list>
       <a mat-list-item routerLink="/" style="height: 0;"></a>
-      <a mat-list-item routerLink="/main" routerLinkActive="nav-list-active" (click)="sidenav.close()"> Main </a>
-      <a mat-list-item routerLink="/help" routerLinkActive="nav-list-active" (click)="sidenav.close()"> Help </a>
-      <a mat-list-item routerLink="/about" routerLinkActive="nav-list-active" (click)="sidenav.close()"> About </a>
+      <a mat-list-item routerLink="/main" routerLinkActive="nav-list-active" (click)="sidenav.close()" fxLayout="row"
+        fxLayoutAlign="center center"> Main </a>
+      <a mat-list-item routerLink="/help" routerLinkActive="nav-list-active" (click)="sidenav.close()" fxLayout="row"
+        fxLayoutAlign="center center"> Help </a>
+      <a mat-list-item routerLink="/about" routerLinkActive="nav-list-active" (click)="sidenav.close()" fxLayout="row"
+        fxLayoutAlign="center center"> About </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content fxLayout="column">
