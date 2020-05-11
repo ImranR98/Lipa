@@ -22,7 +22,9 @@
                                             min="1" step="1" oninput="validity.valid||(value='');" required>
                                     </mat-form-field>
                                     <div fxLayout="column" fxLayoutAlign="center center">
-                                        <mat-checkbox matInput formControlName="taxed">Taxed</mat-checkbox>
+                                        <mat-checkbox matInput formControlName="taxed">Taxed
+                                            {{settingsForm.controls['taxPercentage'].value == 0 ? '(set % below)' : ''}}
+                                        </mat-checkbox>
                                     </div>
                                 </div>
                                 <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">

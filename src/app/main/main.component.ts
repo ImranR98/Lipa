@@ -45,6 +45,14 @@ export class MainComponent implements OnInit, OnDestroy {
     this.subs.push(this.items.valueChanges.subscribe(() => this.handleChanges()))
     this.subs.push(this.people.valueChanges.subscribe(() => this.handleChanges()))
     this.subs.push(this.settingsForm.valueChanges.subscribe((value: { currencyDP: number, taxPercentage: number }) => {
+      if (value.taxPercentage == 0) {
+        this.items.controls.forEach(item => {
+          item.get('taxed').setValue(false)
+          item.get('taxed').disable()
+        })
+      } else {
+        this.items.controls.forEach(item => item.get('taxed').enable())
+      }
       this.settingsService.setCurrencyDP(value.currencyDP)
       this.settingsService.setTaxPercentage(value.taxPercentage)
     }))
@@ -57,7 +65,7 @@ export class MainComponent implements OnInit, OnDestroy {
       item: new FormControl('', Validators.required),
       cost: new FormControl(null, Validators.required),
       quantity: new FormControl(1, Validators.required),
-      taxed: new FormControl(this.settingsForm.controls['taxPercentage'].value > 0),
+      taxed: new FormControl({ value: this.settingsForm.controls['taxPercentage'].value > 0, disabled: this.settingsForm.controls['taxPercentage'].value == 0 }),
     })
   }
 
