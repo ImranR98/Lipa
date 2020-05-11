@@ -11,7 +11,7 @@ export class ResultsComponent implements OnInit {
 
   constructor(private snackBar: MatSnackBar) { }
 
-  url: string = environment.apiUrl
+  url = `${window.location.protocol}//${window.location.host}`
 
   @Input() results: {
     items: { item: string, cost: number, quantity: number, taxed: boolean, dividedBy: number, costPerPerson: number }[],
@@ -19,6 +19,8 @@ export class ResultsComponent implements OnInit {
     settings: { currencyDP: number, taxPercentage: number },
     total: number
   }
+
+  @Input() isDialog: boolean = false
 
   amountColumns: string[] = ['name', 'items', 'totalCost']
   breakdownColumns: string[] = ['item', 'cost', 'quantity', 'taxed', 'dividedBy', 'costPerPerson']

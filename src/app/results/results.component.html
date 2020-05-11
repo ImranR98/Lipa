@@ -1,4 +1,4 @@
-<div fxLayout="column" fxLayoutAlign="space-between" class="height100">
+<div fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="1em" class="height100">
     <mat-tab-group>
         <mat-tab label="Amounts" fxLayout="column" fxLayoutGap="1em">
             <table mat-table [dataSource]="results.people" class="width100">
@@ -67,7 +67,7 @@
             </table>
         </mat-tab>
     </mat-tab-group>
-    <div class="stdMargin">
+    <div [class.stdMargin]="!isDialog">
         Share this result:
         <div fxLayout="row" fxLayoutGap="1em">
             <div class="linkBox" fxLayout="row" fxLayoutAlign="start center">
