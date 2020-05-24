@@ -27,7 +27,9 @@ import { ResultsDialogComponent } from './main/results-dialog/results-dialog.com
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatTableModule } from '@angular/material/table'
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { ResultsContainerComponent } from './results-container/results-container.component'
+import { ResultsContainerComponent } from './results-container/results-container.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment'
 
 @NgModule({
   declarations: [
@@ -60,7 +62,8 @@ import { ResultsContainerComponent } from './results-container/results-container
     MatSnackBarModule,
     MatDialogModule,
     MatTableModule,
-    ClipboardModule
+    ClipboardModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],
   bootstrap: [AppComponent]
