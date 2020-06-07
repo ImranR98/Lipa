@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import html2canvas from 'html2canvas'
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-results',
@@ -10,6 +12,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class ResultsComponent implements OnInit {
 
   constructor(private snackBar: MatSnackBar) { }
+
+  @ViewChild('resultsDiv') resultsDiv: ElementRef
 
   url = `${window.location.protocol}//${window.location.host}`
 
@@ -44,7 +48,18 @@ export class ResultsComponent implements OnInit {
   }
 
   showCopySnackbar(): void {
-    this.snackBar.open('Copied', 'Dismiss', { duration: 5000 })
+    this.snackBar.open('Link has been copied. Note: Other Apps may cut off some characters of the link, making it useless. Downloading as image is recommended instead.', 'Dismiss')
   }
 
+  download() {
+    html2canvas(this.resultsDiv.nativeElement).then((canvas) => {
+      canvas.toBlob((blob) => {
+        let now = new Date()
+        FileSaver.saveAs(blob, `Lipa-result-${now.getFullYear()}-${now.getMonth() + 1}-${now.getDay()}-${now.getHours()}-${now.getMinutes()}.png`)
+      }, 'image/png')
+    }).catch(err => {
+      console.log(err)
+      this.snackBar.open('Error', 'Dismiss', { duration: 5000 })
+    })
+  }
 }

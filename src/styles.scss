@@ -12,7 +12,6 @@ $dark-mode-warn: mat-palette($mat-red);
 //Define a theme using the above palettes
 $dark-mode-theme: mat-dark-theme($dark-mode-primary, $dark-mode-accent, $dark-mode-warn);
 
-//Define another theme and import it in a class (not default)
 $light-mode-primary:  mat-palette($mat-pink);
 $light-mode-accent: mat-palette($mat-amber);
 $light-mode-warn: mat-palette($mat-red);
@@ -23,9 +22,18 @@ $light-mode-theme: mat-light-theme($light-mode-primary, $light-mode-accent, $lig
   html {
     background-color: #000
   }
+  .resultsDiv {
+    background-color: #424242;
+  }
   .nav-list-active {
     color: mat-color($dark-mode-accent, lighter) !important;
     background-color: mat-color($dark-mode-accent, default, 0.1) !important;
+  }
+  .amountsDiv {
+    background-color: mat-color($dark-mode-primary, darker);
+  }
+  .breakdownDiv {
+    background-color: mat-color($dark-mode-accent, 900);
   }
 }
 
@@ -34,9 +42,19 @@ $light-mode-theme: mat-light-theme($light-mode-primary, $light-mode-accent, $lig
   html {
     background-color: #FFF
   }
+  .resultsDiv {
+    background-color: #FAFAFA;
+  }
   .nav-list-active {
     color: mat-color($light-mode-accent, darker) !important;
     background-color: mat-color($light-mode-accent, default, 0.1) !important;
+  }
+  .amountsDiv {
+    background-color: mat-color($light-mode-primary, lighter);
+  }
+  
+  .breakdownDiv {
+    background-color: mat-color($light-mode-accent, lighter);
   }
 }
 
@@ -94,15 +112,25 @@ mat-sidenav {
   text-decoration: none !important;
 }
 
-.linkBox a {
+a {
   color: inherit;
 }
 
 .hiddenLink {
   text-decoration: none;
-  color: inherit;
 }
 
 .picAsIcon {
   width: 2em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.closeDialogButton {
+  position: fixed !important;
+  top: 1.25em !important;
+  right: 1.75em !important;
+  z-index: 1000 !important;
 }

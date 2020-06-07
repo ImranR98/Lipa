@@ -198,6 +198,11 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   }
 
+  showTaxedMessage() {
+    if (this.settingsForm.controls['taxPercentage'].value == 0)
+      this.snackBar.open('Enter the tax % at the bottom of the page.', 'Okay', { duration: 5000 })
+  }
+
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe())
   }

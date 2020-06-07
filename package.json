@@ -23,7 +23,10 @@
     "@angular/platform-browser-dynamic": "^9.1.9",
     "@angular/router": "^9.1.9",
     "@angular/service-worker": "^9.1.9",
+    "@types/file-saver": "^2.0.1",
     "express": "^4.17.1",
+    "file-saver": "^2.0.2",
+    "html2canvas": "^1.0.0-rc.5",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"

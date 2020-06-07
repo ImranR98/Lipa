@@ -4,9 +4,9 @@
             <form [formGroup]="itemsForm" fxLayout="column" fxLayoutGap="1em" class="stdMarginTop" class="stdPadding">
                 <div formArrayName="items" *ngFor="let item of itemsForm.get('items')['controls']; let i = index;">
                     <div [formGroupName]="i">
-                        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="1em">
+                        <div fxLayout="column" fxLayoutGap="1em">
                             <div fxLayout="row" fxLayoutGap="1em">
-                                <mat-form-field fxFlex="100%">
+                                <mat-form-field fxFlex="50%">
                                     <input matInput formControlName="item" placeholder="Item" type="text" required>
                                 </mat-form-field>
                                 <mat-form-field fxFlex="30%">
@@ -14,6 +14,13 @@
                                         [step]="numberOfDecimalPlacesToHTMLStepValue(this.settingsForm.controls['currencyDP'].value)"
                                         oninput="validity.valid||(value='');" required>
                                 </mat-form-field>
+                                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="20%">
+                                    <div></div>
+                                    <button mat-icon-button color="warn" aria-label="delete" [disabled]="i == 0"
+                                        (click)="removeItem(i)">
+                                        <mat-icon>delete_outline</mat-icon>
+                                    </button>
+                                </div>
                             </div>
                             <div fxLayout="row" fxLayoutGap="1em" fxFlex="100%">
                                 <div fxLayout="row" fxLayoutGap="1em">
@@ -22,17 +29,9 @@
                                             min="1" step="1" oninput="validity.valid||(value='');" required>
                                     </mat-form-field>
                                     <div fxLayout="column" fxLayoutAlign="center center">
-                                        <mat-checkbox matInput formControlName="taxed">Taxed
-                                            {{settingsForm.controls['taxPercentage'].value == 0 ? '(set % below)' : ''}}
+                                        <mat-checkbox matInput formControlName="taxed" (click)="showTaxedMessage()">Taxed
                                         </mat-checkbox>
                                     </div>
-                                </div>
-                                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
-                                    <div></div>
-                                    <button mat-icon-button color="warn" aria-label="delete" [disabled]="i == 0"
-                                        (click)="removeItem(i)">
-                                        <mat-icon>delete_outline</mat-icon>
-                                    </button>
                                 </div>
                             </div>
                         </div>

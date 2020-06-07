@@ -1,55 +1,64 @@
-<div fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="1em" class="height100">
-    <mat-tab-group>
-        <mat-tab label="Amounts">
-            <div fxLayout="column" fxLayoutGap="1em">
-                <table mat-table [dataSource]="results.people" class="width100">
-                    <ng-container matColumnDef="name">
-                        <th mat-header-cell *matHeaderCellDef>Name</th>
-                        <td mat-cell *matCellDef="let element">{{element.name}} </td>
-                        <td mat-footer-cell *matFooterCellDef>Total<strong
-                                *ngIf="actualTotal != roundOffByDPSetting(results.total)"> *</strong></td>
-                    </ng-container>
-                    <ng-container matColumnDef="items">
-                        <th mat-header-cell *matHeaderCellDef>&nbsp;Items</th>
-                        <td mat-cell *matCellDef="let element">
-                            <div fxLayout="column">
-                                <span *ngFor="let item of element.items; let i = index;">
-                                    <span
-                                        *ngIf="item.chippingIn">{{item.item + ' @' + roundOffByDPSetting(item.cost)}}</span>
-                                </span>
-                            </div>
-                        </td>
-                        <td mat-footer-cell *matFooterCellDef></td>
-                    </ng-container>
-                    <ng-container matColumnDef="totalCost">
-                        <th mat-header-cell *matHeaderCellDef>Amount</th>
-                        <td mat-cell *matCellDef="let element">{{roundOffByDPSetting(element.totalCost)}} </td>
-                        <td mat-footer-cell *matFooterCellDef>{{actualTotal}} </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="amountColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: amountColumns;"></tr>
-                    <tr mat-footer-row *matFooterRowDef="amountColumns; sticky: true"></tr>
-                </table>
-                <div [class.stdMarginLeft]="!isDialog" [class.stdMarginRight]="!isDialog">
-                    <p *ngIf="actualTotal < roundOffByDPSetting(results.total)">
-                        <strong>*</strong> The actual total is <strong>{{roundOffByDPSetting(results.total)}}</strong>,
-                        so
-                        <strong>{{roundOffByDPSetting(roundOffByDPSetting(results.total) - actualTotal)}}</strong>
-                        remains due to rounding errors and cannot be divided further. It should be added to someone's
-                        cost.
-                    </p>
-                    <p *ngIf="actualTotal > roundOffByDPSetting(results.total)">
-                        <strong>*</strong> The actual total is <strong>{{roundOffByDPSetting(results.total)}}</strong>,
-                        so
-                        <strong>{{roundOffByDPSetting(actualTotal - roundOffByDPSetting(results.total))}}</strong>
-                        is extra due to rounding errors and cannot be divided further. It should be discounted from
-                        someone's cost.
-                    </p>
-                </div>
+<div fxLayout="column" fxLayoutAlign="space-between">
+    <div fxLayout="row" fxLayout.lt-sm="column" class="resultsDiv" #resultsDiv>
+        <div fxFlex.sm="50%" fxFlex.gt-sm="50%">
+            <div class="stdPadding amountsDiv">
+                <strong>Amounts</strong>
             </div>
-        </mat-tab>
-        <mat-tab label="Breakdown">
+            <mat-divider></mat-divider>
+            <table mat-table [dataSource]="results.people" class="width100">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let element">{{element.name}} </td>
+                    <td mat-footer-cell *matFooterCellDef><strong>Total</strong><em
+                            *ngIf="actualTotal != roundOffByDPSetting(results.total)"> * see note *</em>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="items">
+                    <th mat-header-cell *matHeaderCellDef>&nbsp;Items</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div fxLayout="column">
+                            <span *ngFor="let item of element.items; let i = index;">
+                                <span
+                                    *ngIf="item.chippingIn">{{item.item + ' @' + roundOffByDPSetting(item.cost)}}</span>
+                            </span>
+                        </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                </ng-container>
+                <ng-container matColumnDef="totalCost">
+                    <th mat-header-cell *matHeaderCellDef>Amount</th>
+                    <td mat-cell *matCellDef="let element">{{roundOffByDPSetting(element.totalCost)}} </td>
+                    <td mat-footer-cell *matFooterCellDef>{{actualTotal}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="amountColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: amountColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="amountColumns;"></tr>
+            </table>
+            <div *ngIf="actualTotal < roundOffByDPSetting(results.total) || actualTotal > roundOffByDPSetting(results.total)"
+                [class.stdMarginLeft]="!isDialog" [class.stdMarginRight]="!isDialog" class="stdMarginTop">
+                <p *ngIf="actualTotal < roundOffByDPSetting(results.total)">
+                    <strong>*</strong> The actual total is <strong>{{roundOffByDPSetting(results.total)}}</strong>,
+                    so
+                    <strong>{{roundOffByDPSetting(roundOffByDPSetting(results.total) - actualTotal)}}</strong>
+                    remains due to rounding errors and cannot be divided further. It should be added to someone's
+                    cost.
+                </p>
+                <p *ngIf="actualTotal > roundOffByDPSetting(results.total)">
+                    <strong>*</strong> The actual total is <strong>{{roundOffByDPSetting(results.total)}}</strong>,
+                    so
+                    <strong>{{roundOffByDPSetting(actualTotal - roundOffByDPSetting(results.total))}}</strong>
+                    is extra due to rounding errors and cannot be divided further. It should be discounted from
+                    someone's cost.
+                </p>
+            </div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div fxFlex.sm="50%" fxFlex.gt-sm="50%">
+            <div class="stdPadding breakdownDiv">
+                <strong>Breakdown</strong>
+            </div>
+            <mat-divider></mat-divider>
             <table mat-table [dataSource]="results.items" class="width100">
                 <ng-container matColumnDef="item">
                     <th mat-header-cell *matHeaderCellDef>Item</th>
@@ -81,18 +90,14 @@
                 <tr mat-header-row *matHeaderRowDef="breakdownColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: breakdownColumns;"></tr>
             </table>
-        </mat-tab>
-    </mat-tab-group>
-    <div [class.stdMargin]="!isDialog">
-        Share this result:
-        <div fxLayout="row" fxLayoutGap="1em">
-            <div class="linkBox" fxLayout="row" fxLayoutAlign="start center">
-                <a [href]="url + '/results?data=' + base64EncodeResults()"
-                    target="_blank">{{url}}/results?data={{base64EncodeResults()}}</a>
-            </div>
-            <button mat-raised-button color="accent"
-                [cdkCopyToClipboard]="url + '/results?data=' + base64EncodeResults()"
-                (click)="showCopySnackbar()">Copy</button>
         </div>
+    </div>
+    <div [class.stdMarginLeft]="!isDialog" [class.stdMarginRight]="!isDialog" class="stdMarginTop stdMarginBottom"
+        fxLayout="column" fxLayoutAlign="default start" fxLayoutAlign.lt-sm="default default" fxLayoutGap="1em">
+        <button mat-raised-button color="accent" (click)="download()" class="stdMarginBottom">Download as
+            Image</button>
+        <a href="javascript:;" [cdkCopyToClipboard]="url + '/results?data=' + base64EncodeResults()"
+            (click)="showCopySnackbar()"><small>Copy Link
+                (not recommended)</small></a>
     </div>
 </div>

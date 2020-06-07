@@ -1,9 +1,7 @@
-<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+<div mat-dialog-title>
     Results
-    <button mat-icon-button (click)="close()" color="accent">
-        <mat-icon>close</mat-icon>
-    </button>
 </div>
-<mat-dialog-content class="height100">
-    <app-results [results]="data" [isDialog]="true"></app-results>
-</mat-dialog-content>
+<button mat-mini-fab (click)="close()" color="warn" class="closeDialogButton">
+    <mat-icon>close</mat-icon>
+</button>
+<app-results [results]="data" [isDialog]="true"></app-results>
